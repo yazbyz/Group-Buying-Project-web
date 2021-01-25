@@ -6,10 +6,10 @@ public interface UserDAO {
 	
 	public void insertUser(UserDTO user);
 	
-	public void readUser(UserDTO user);
+	public void readUser(String user_id);
 	
 	public void updateUser(UserDTO user);
 	
-	public void deleteUser(UserDTO user);
+	public void deleteUser(String user_id);
 
 }

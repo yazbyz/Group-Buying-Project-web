@@ -6,10 +6,10 @@ public interface CommentDAO {
 	
 	public void insertComment(CommentDTO comment);
 	
-	public void readComment(CommentDTO comment);
+	public void readComment(String comment_id);
 	
 	public void updateComment(CommentDTO comment);
 	
-	public void deleteComment(CommentDTO comment);
+	public void deleteComment(String comment_id);
 
 }

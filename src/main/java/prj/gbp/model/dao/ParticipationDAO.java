@@ -6,10 +6,10 @@ public interface ParticipationDAO {
 	
 	public void insertParticipation(ParticipationDTO user);
 	
-	public void readParticipation(ParticipationDTO user);
+	public void readParticipation(String participation_id);
 	
 	public void updateParticipation(ParticipationDTO user);
 	
-	public void deleteParticipation(ParticipationDTO user);
+	public void deleteParticipation(String participation_id);
 
 }
