@@ -61,20 +61,18 @@
 
 
 
-	<!-- photo 테이블 조인 다시 확인하기??? -->
-
-	<!-- List형태로 가져와야 할 것 같은데 잘 모르겠음.. -->
+	<!-- photo 테이블 조인 다시 확인하기 -->
+	<!-- 의견 : photo는 posting_id를 통해서 SQL문을 따로 실행시키고 싶음 -->
+	
+	<!-- posting + photo dto를 합쳐야 할듯 -->
 	<select id="getPosting"
 		resultType="com.gbp.webprj.model.PostingDto">
 		SELECT *
-		FROM posting
+		FROM posting as po JOIN photo as pho
+		WHERE po.posting_id = pho.posting_id
 		ORDER BY registeredAt DESC
 	</select>
 
-
-	<!-- 조인 된 테이블의 resultType은??? -->
-	
-	
 	<!-- 내가 참여한 글 조회 -->
 	<select id="getMyParticipatePosting"
 		parameterType="com.gbp.webprj.model.PostingDto"
