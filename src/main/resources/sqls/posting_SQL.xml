@@ -1,6 +1,144 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE  mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="posting">
+
+
+	<!-- photo 테이블 조인 다시 확인하기 -->
+	<!-- 의견 : photo는 posting_id를 통해서 SQL문을 따로 실행시키고 싶음 -->
 	
+	<!-- posting + photo dto를 합쳐야 할듯 -->
+	<select id="getPosting"
+		resultType="com.gbp.webprj.model.PostingDto">
+		SELECT *
+		FROM posting as po JOIN photo as pho
+		WHERE po.posting_id = pho.posting_id
+		ORDER BY registeredAt DESC
+	</select>
+
+	<!-- 내가 참여한 글 조회 -->
+	<select id="getMyParticipatePosting"
+		parameterType="com.gbp.webprj.model.PostingDto"
+		resultType="com.gbp.webprj.model.PostingDto">
+		SELECT po.*
+		FROM posting AS po
+		JOIN participation AS pa
+		WHERE
+		pa.positing_id = po.posting_id
+		AND po.register_id like
+		'#{register_id}'
+		OR pa.requester_id like '#{requester_id}'
+	</select>
+
+	<!-- 내 글 중에 거래 진행 중인 글 조회 -->
+	<select id="getMyParticipatePostingProgressOn"
+		parameterType="com.gbp.webprj.model.PostingDto"
+		resultType="com.gbp.webprj.model.PostingDto">
+		SELECT mine.*
+		FROM
+		(SELECT *
+		FROM posting AS po
+		JOIN
+		participation AS pa
+		WHERE pa.positing_id = po.posting_id
+		AND
+		po.register_id like '' OR
+		pa.requester_id like ''
+		) AS mine
+		WHERE
+		mine.step like '진행중'
+	</select>
+
+	<!-- 내 글 중에 거래 종료된 글 조회 -->
+	<select id="getMyParticipatePostingFinished"
+		parameterType="com.gbp.webprj.model.PostingDto"
+		resultType="com.gbp.webprj.model.PostingDto">
+		SELECT mine.*
+		FROM
+		(SELECT *
+		FROM posting AS po
+		JOIN
+		participation AS pa
+		WHERE pa.positing_id = po.posting_id
+		AND
+		po.register_id like '#{register_id}' OR
+		pa.requester_id like
+		'#{requester_id}'
+		) AS mine
+		WHERE
+		mine.step like '종료';
+	</select>
+
+	<!-- 내가 신청한 글 조회 -->
+	<select id="getMyRequestPosting"
+		resultType="com.gbp.webprj.model.PostingDto">
+		SELECT mine.*
+		FROM
+		(SELECT
+		FROM posting AS po
+		JOIN
+		participation AS pa
+		WHERE pa.positing_id = po.posting_id
+		AND
+		pa.requester_id like ''
+		) AS mine
+	</select>
+
+	<!-- 내가 작성한 글 조회 -->
+	<select id="getMyWritePosting"
+		resultType="com.gbp.webprj.model.PostingDto">
+		SELECT *
+		FROM posting
+		WHERE requester_id like user_id;
+	</select>
+
+	<!-- 공동구매 글 작성 -->
+	<insert id="insertPosting"
+		parameterType="com.gbp.webprj.model.PostingDto">
+		INSERT INTO posting (requester_id, title, content,
+		category,
+		matching, site, photo)
+		VALUES (#{requester_id}, #{title},
+		#{content}, #{category}, #{matching}, #{site}, #{photo});
+	</insert>
+
+	<!-- 공동구매 글 수정 -->
+	<update id="updateMyPositing" parameterType="String">
+		UPDATE posting
+		SET
+		(title, content, category, matching, site,
+		photo) = ('#{title}',
+		'#{content}', '#{category}', '#{matching}',
+		'#{site}')
+		WHERE user_id
+		like '#{user_id}';
+	</update>
+
+	<!-- 공동구매 신청 -->
+	<insert id="insertRequestParticipation"
+		parameterType="com.gbp.webprj.model.ParticipationgDto">
+		INSERT INTO participation (posting_id, requester_id,
+		step,
+		rate_suggester, rate_requester)
+		VALUES (#{posting_id},
+		#{requester_id}, '신청', #{rate_suggester}, #{rate_requester});
+	</insert>
+
+	<!-- 참가인원 계산 -->
+	<select id="getParticipantCount" parameterType="String">
+		SELECT
+		count(participation_id)
+		FROM participation
+		WHERE posting_id =
+		'#{posting_id}' AND step like '진행중';
+	</select>
+
+	<!-- 글 조회 -->
+	<select id="getPostingAll"
+		resultType="com.gbp.webprj.model.PostingDto">
+		SELECT *
+		FROM posting
+		ORDER BY registeredAt DESC;
+	</select>
+
 
 </mapper>
