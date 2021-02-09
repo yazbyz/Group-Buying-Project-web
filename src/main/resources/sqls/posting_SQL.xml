@@ -1,64 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE  mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="HJ">
-
-	<!-- 사용자 조회 -->
-	<select id="getUser" parameterType="String" resultType="String">
-		SELECT
-		user_id
-		FROM user
-		WHERE email like '#{email}'
-	</select>
-
-	<!-- 사용자 삽입 -->
-	<insert id="insertUser"
-		parameterType="com.gbp.webprj.model.UserDto">
-		INSERT INTO user
-		VALUES(nickname, email, image,
-		access_token, token_type,
-		expires_in, id_token, suggest_rate,
-		request_rate)
-		ON DUPLICATE KEY UPDATE
-		email='#{email}',
-		image='#{image}',
-		access_token='#{access_token}',
-		token_type='#{token_type}',
-		expires_in='#{expires_in}',
-		id_token='#{id_token}',
-		suggest_rate='#{suggest_rate}'
-	</insert>
-
-	<!-- 내정보 조회 -->
-	<select id="getMyInfo" parameterType="String"
-		resultType="com.gbp.webprj.model.UserDto">
-		SELECT nickname, email, image, register_rate,
-		suggester_rate
-		FROM user
-		WHERE user_id like '#{user_id}'
-	</select>
-
-	<!-- 내정보 수정 -->
-	<update id="updateMyInfo"
-		parameterType="com.gbp.webprj.model.UserDto">
-		UPDATE user
-		SET (nickname, email, image, register_rate,
-		suggester_rate)
-		= ('#{nickname}', '#{email}','#{image}',
-		'#{register_rate}',
-		'#{suggeter_rate}')
-		where user_id like '#{user_id}'
-
-	</update>
-
-	<!-- 탈퇴 -->
-	<delete id="deleteUser" parameterType="String">
-		DELETE
-		FROM user
-		WHERE
-		user_id like '#{user_id}'
-	</delete>
-
-
+<mapper namespace="posting">
 
 
 	<!-- photo 테이블 조인 다시 확인하기 -->
@@ -198,37 +140,5 @@
 		ORDER BY registeredAt DESC;
 	</select>
 
-	<!-- 댓글 작성 -->
-	<insert id="insertComment"
-		parameterType="com.gbp.webprj.model.CommentDto">
-		INSERT INTO comment (user_id, posting_id, content)
-		VALUES (#{user_id}, #{posting_id}, #{content});
-	</insert>
 
-	<!-- 댓글 수정 -->
-	<update id="updateComment"
-		parameterType="com.gbp.webprj.model.CommentDto">
-		UPDATE comment
-		SET (content) = ('#{content}')
-		WHERE
-		comment_id like '#{comment_id}';
-	</update>
-
-	<!-- 댓글 삭제(서비스 단에서 삭제상태를 가진 댓글은 가리기) -->
-	<delete id="deleteComment">
-		UPDATE comment
-		SET (status) = ('delete')
-		WHERE
-		comment_id like '#{comment_id}';
-	</delete>
-
-	<!-- 댓글조회 -->
-	<select id="getComment" parameterType="String"
-		resultType="com.gbp.webprj.model.CommentDto">
-		SELECT *
-		FROM comment
-		WHERE posting_id like '#{posting_id}'
-		ORDER BY registeredAt ASC;
-
-	</select>
 </mapper>

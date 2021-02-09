@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE  mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="user">
+
+	<!-- 사용자 조회 -->
+	<select id="getUser" parameterType="String" resultType="String">
+		SELECT
+		user_id
+		FROM user
+		WHERE email like '#{email}'
+	</select>
+
+	<!-- 사용자 삽입 -->
+	<insert id="insertUser"
+		parameterType="com.gbp.webprj.model.UserDto">
+		INSERT INTO user
+		VALUES(nickname, email, image,
+		access_token, token_type,
+		expires_in, id_token, suggest_rate,
+		request_rate)
+		ON DUPLICATE KEY UPDATE
+		email='#{email}',
+		image='#{image}',
+		access_token='#{access_token}',
+		token_type='#{token_type}',
+		expires_in='#{expires_in}',
+		id_token='#{id_token}',
+		suggest_rate='#{suggest_rate}'
+	</insert>
+
+	<!-- 내정보 조회 -->
+	<select id="getMyInfo" parameterType="String"
+		resultType="com.gbp.webprj.model.UserDto">
+		SELECT nickname, email, image, register_rate,
+		suggester_rate
+		FROM user
+		WHERE user_id like '#{user_id}'
+	</select>
+
+	<!-- 내정보 수정 -->
+	<update id="updateMyInfo"
+		parameterType="com.gbp.webprj.model.UserDto">
+		UPDATE user
+		SET (nickname, email, image, register_rate,
+		suggester_rate)
+		= ('#{nickname}', '#{email}','#{image}',
+		'#{register_rate}',
+		'#{suggeter_rate}')
+		where user_id like '#{user_id}'
+
+	</update>
+
+	<!-- 탈퇴 -->
+	<delete id="deleteUser" parameterType="String">
+		DELETE
+		FROM user
+		WHERE
+		user_id like '#{user_id}'
+	</delete>
+
+</mapper>
