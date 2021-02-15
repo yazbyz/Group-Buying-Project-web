@@ -8,4 +8,37 @@
 		WHERE #{userId} = c.user_id;
 	</select>
 
+	<!-- 댓글 작성 -->
+	<insert id="insertComment"
+		parameterType="com.gbp.webprj.model.CommentDto">
+		INSERT INTO comment (user_id, posting_id, content)
+		VALUES (#{user_id}, #{posting_id}, #{content});
+	</insert>
+
+	<!-- 댓글 수정 -->
+	<update id="updateComment"
+		parameterType="com.gbp.webprj.model.CommentDto">
+		UPDATE comment
+		SET (content) = ('#{content}')
+		WHERE
+		comment_id like '#{comment_id}';
+	</update>
+
+	<!-- 댓글 삭제(서비스 단에서 삭제상태를 가진 댓글은 가리기) -->
+	<delete id="deleteComment">
+		UPDATE comment
+		SET (status) = ('delete')
+		WHERE
+		comment_id like '#{comment_id}';
+	</delete>
+
+	<!-- 댓글조회 -->
+	<select id="getComment" parameterType="String"
+		resultType="com.gbp.webprj.model.CommentDto">
+		SELECT *
+		FROM comment
+		WHERE posting_id like '#{posting_id}'
+		ORDER BY registeredAt ASC;
+
+	</select>
 </mapper>
