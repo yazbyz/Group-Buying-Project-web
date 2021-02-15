@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE  mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="participation">
+	<update id="acceptParticipation" parameterType="int">
+	    UPDATE participation
+		SET step = ‘accept’
+		WHERE requester_id = requesterId;
+	</update>
+	
+	<update id="rejectParticipation" parameterType="int">
+		UPDATE participation
+		SET step = ‘reject’
+		WHERE requester_id = #{requesterId};
+	</update>
+	
+	<update id="finishParticipation" parameterType="int">
+		UPDATE participation
+		SET step = ‘finish’
+		WHERE participation_id = #{participationID};
+	</update>
+	
+	<select id="selectProfileInfo"  parameterType="int" resultType="user">
+   		SELECT u.nickname, u.suggest_rate, u.request_rate
+		FROM user u, participation p
+		WHERE #{userId} = #{requesterId} AND step = ‘request’;
+	</select>
+	
+	<update id="updateSuggesterRate" parameterType="double">
+		UPDATE participation
+		SET rate_suggester = #{suggesterRate}
+		WHERE step = finish;
+	</update>
+	
+	<update id="updateRequesterRate" parameterType="double">
+		UPDATE participation
+		SET rate_requester = #{requesterRate}
+		WHERE step = finish;
+	</update>
+	
+</mapper>
