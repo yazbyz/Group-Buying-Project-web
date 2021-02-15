@@ -15,9 +15,9 @@
 		ORDER BY registeredAt DESC
 	</select>
 
-	<!-- 내가 참여한 글 조회 -->
+	<!-- 내가 (작성하던 신청하던) 참여한 모든 글 조회 (210216 수정)-->
 	<select id="getMyParticipatePosting"
-		parameterType="com.gbp.webprj.model.PostingDto"
+		parameterType="String"
 		resultType="com.gbp.webprj.model.PostingDto">
 		SELECT po.*
 		FROM posting AS po
@@ -25,13 +25,13 @@
 		WHERE
 		pa.positing_id = po.posting_id
 		AND po.register_id like
-		'#{register_id}'
-		OR pa.requester_id like '#{requester_id}'
+		'#{user_id}'
+		OR pa.requester_id like '#{user_id}'
 	</select>
 
-	<!-- 내 글 중에 거래 진행 중인 글 조회 -->
+	<!-- 내가 참여한 모든 글 중에 거래 진행 중인 글 조회 (210216 수정) -->
 	<select id="getMyParticipatePostingProgressOn"
-		parameterType="com.gbp.webprj.model.PostingDto"
+		parameterType="String"
 		resultType="com.gbp.webprj.model.PostingDto">
 		SELECT mine.*
 		FROM
@@ -41,14 +41,14 @@
 		participation AS pa
 		WHERE pa.positing_id = po.posting_id
 		AND
-		po.register_id like '' OR
-		pa.requester_id like ''
+		po.register_id like '#{user_id}' OR
+		pa.requester_id like '#{user_id}'
 		) AS mine
 		WHERE
 		mine.step like '진행중'
 	</select>
 
-	<!-- 내 글 중에 거래 종료된 글 조회 -->
+	<!-- 내가 참여한 모든 글 중에, 거래 종료된 글 조회 (210216 수정)-->
 	<select id="getMyParticipatePostingFinished"
 		parameterType="com.gbp.webprj.model.PostingDto"
 		resultType="com.gbp.webprj.model.PostingDto">
@@ -60,16 +60,17 @@
 		participation AS pa
 		WHERE pa.positing_id = po.posting_id
 		AND
-		po.register_id like '#{register_id}' OR
+		po.register_id like '#{user_id}' OR
 		pa.requester_id like
-		'#{requester_id}'
+		'#{user_id}'
 		) AS mine
 		WHERE
 		mine.step like '종료';
 	</select>
 
-	<!-- 내가 신청한 글 조회 -->
+	<!-- 내가 참여한 모든 글 중에, 내가 신청한 글 조회 (210216 수정)-->
 	<select id="getMyRequestPosting"
+		parameterType="String"
 		resultType="com.gbp.webprj.model.PostingDto">
 		SELECT mine.*
 		FROM
@@ -79,16 +80,17 @@
 		participation AS pa
 		WHERE pa.positing_id = po.posting_id
 		AND
-		pa.requester_id like ''
+		pa.requester_id like '#{user_id}'
 		) AS mine
 	</select>
 
-	<!-- 내가 작성한 글 조회 -->
+	<!-- 내가 참여한 모든 글 중에, 내가 작성한 글 조회 (210216 수정)-->
 	<select id="getMyWritePosting"
+		parameterType="String"
 		resultType="com.gbp.webprj.model.PostingDto">
 		SELECT *
 		FROM posting
-		WHERE requester_id like user_id;
+		WHERE requester_id like '#{user_id}';
 	</select>
 
 	<!-- 공동구매 글 작성 -->
@@ -101,8 +103,8 @@
 		#{content}, #{category}, #{matching}, #{site}, #{photo});
 	</insert>
 
-	<!-- 공동구매 글 수정 -->
-	<update id="updateMyPositing" parameterType="String">
+	<!-- 공동구매 글 수정 (210216 수정) -->
+	<update id="updateMyPositing" parameterType="com.gbp.webprj.model.PostingDto">
 		UPDATE posting
 		SET
 		(title, content, category, matching, site,
@@ -112,16 +114,6 @@
 		WHERE user_id
 		like '#{user_id}';
 	</update>
-
-	<!-- 공동구매 신청 -->
-	<insert id="insertRequestParticipation"
-		parameterType="com.gbp.webprj.model.ParticipationgDto">
-		INSERT INTO participation (posting_id, requester_id,
-		step,
-		rate_suggester, rate_requester)
-		VALUES (#{posting_id},
-		#{requester_id}, '신청', #{rate_suggester}, #{rate_requester});
-	</insert>
 
 	<!-- 참가인원 계산 -->
 	<select id="getParticipantCount" parameterType="String">
