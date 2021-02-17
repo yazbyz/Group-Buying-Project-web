@@ -1,11 +1,11 @@
 package com.gbp.webprj.model;
 
-public class bookmarkDto {
+public class BookmarkDto {
 
 	int postingId;
 	int userId;
 	
-	public bookmarkDto() {
+	public BookmarkDto() {
 		super();
 	}
 

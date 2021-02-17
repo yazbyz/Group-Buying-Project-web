@@ -1,6 +1,6 @@
 package com.gbp.webprj.model;
 
-public class postingDto {
+public class PostingDto {
 
 	int requesterId;
 	String registeredAt;
@@ -12,7 +12,7 @@ public class postingDto {
 	String site;
 	String deadline;
 	
-	public postingDto() {
+	public PostingDto() {
 		super();
 	}
 
