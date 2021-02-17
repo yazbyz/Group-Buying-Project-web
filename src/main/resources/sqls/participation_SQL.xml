@@ -15,7 +15,7 @@
 	<update id="acceptParticipation" parameterType="int">
 		UPDATE participation
 		SET step = ‘accept’
-		WHERE requester_id = requesterId;
+		WHERE requester_id = #{requesterId};
 	</update>
 
 	<update id="rejectParticipation" parameterType="int">
@@ -29,15 +29,12 @@
 		UPDATE
 		participation
 		SET step = ‘finish’
-		WHERE participation_id =
-		#{participationID};
+		WHERE participation_id = #{participationId};
 	</update>
-
-	<select id="selectProfileInfo" parameterType="int"
-		resultType="user">
-		SELECT u.nickname, u.suggest_rate, u.request_rate
-		FROM user u, participation
-		p
+	
+	<select id="selectProfileInfo"  parameterType="int" resultType="profileInfo">
+   		SELECT u.nickname, u.suggest_rate, u.request_rate
+		FROM user u, participation p
 		WHERE #{userId} = #{requesterId} AND step = ‘request’;
 	</select>
 
